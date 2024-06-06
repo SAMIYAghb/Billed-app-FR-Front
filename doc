@@ -1,0 +1,25 @@
+
+
+
+utilisateur : admin@test.tld 
+mot de passe : admin
+
+
+utilisateur : employee@test.tld
+mot de passe : employee
+
+
+cd Billed-app-FR-Back
+npm run run:dev
+http://localhost:5678
+
+
+cd Billed-app-FR-Front
+live-server
+http://127.0.0.1:8080/
+
+
+
+npm test __tests__/login.js
+npm test __tests__/Bills.js
+npm test __tests__/NewBill.js
