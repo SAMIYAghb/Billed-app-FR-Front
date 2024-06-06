@@ -146,7 +146,10 @@ export default class {
     }
 
     bills.forEach(bill => {
-      $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+      $(`#open-bill${bill.id}`)
+      //La méthode .off("click") est utilisée pour détacher tous les gestionnaires d'événements click précédemment attachés à l'élément sélectionné. Cela garantit qu'il n'y a qu'un seul gestionnaire d'événements click attaché à cet élément à la fois, évitant ainsi les conflits ou les comportements inattendus.
+      .off("click")
+      .click((e) => this.handleEditTicket(e, bill, bills))
     })
 
     return bills
