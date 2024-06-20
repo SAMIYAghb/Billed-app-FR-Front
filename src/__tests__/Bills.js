@@ -13,27 +13,33 @@ import router from "../app/Router.js";
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
     test("Then bill icon in vertical layout should be highlighted", async () => {
-
+// Ces lignes créent un mock de localStorage pour le test et y stockent un objet utilisateur avec le type "Employee".
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
       }))
+      // Préparation du DOM: C'est souvent nécessaire pour simuler l'environnement dans lequel le code s'exécute.
       const root = document.createElement("div")
       root.setAttribute("id", "root")
-      document.body.append(root)
+      document.body.append(root);
+      // Navigation vers la Page des Factures:
+      // Ces lignes initialisent le routeur de l'application et naviguent vers la route des factures.
       router()
-      window.onNavigate(ROUTES_PATH.Bills)
-      await waitFor(() => screen.getByTestId('icon-window'))
-      const windowIcon = screen.getByTestId('icon-window')
+      window.onNavigate(ROUTES_PATH.Bills);
+      // Attente de l'Icône de Facture:
+      // La première ligne attend que l'élément avec l'attribut data-testid="icon-window" soit rendu dans le DOM. La deuxième ligne stocke cet élément dans la variable windowIcon.
+      await waitFor(() => screen.getByTestId('icon-window'));
+      const windowIcon = screen.getByTestId('icon-window');
+      console.log('Bills __test__');
       console.log(windowIcon);
-      // const activeIcon = windowIcon.classList.contains("active-icon");
       //to-do write expect expression
 
       // Condition for pass the test
       // SB expect
-      // L'assertion expect(activeIcon).toBeTruthy() est généralement utilisée pour vérifier que activeIcon existe et n'est pas une valeur "falsy". Cela signifie que activeIcon pourrait être n'importe quelle valeur qui n'est pas false, 0, "", null, undefined, ou NaN.
-      // expect(activeIcon).toBeTruthy();
+      // vérifier que l'élément windowIcon contient la classe active-icon, indiquant qu'il est mis en surbrillance.
+      expect(windowIcon.classList.contains("active-icon")).toBe(true);
     })
+    
     test("Then bills should be ordered from earliest to latest", () => {
       document.body.innerHTML = BillsUI({ data: bills });
       const dates = screen
