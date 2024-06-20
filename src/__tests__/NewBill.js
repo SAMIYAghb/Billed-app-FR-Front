@@ -15,4 +15,15 @@ describe("Given I am connected as an employee", () => {
       //to-do write assertion
     })
   })
+
+  // SB
+  describe("When I select an image in a correct format", () => {
+    test("Then the input file should display the file name", () => {
+      const html = NewBillUI();
+      document.body.innerHTML = html;
+    })
+  
+    })
+
+
 })

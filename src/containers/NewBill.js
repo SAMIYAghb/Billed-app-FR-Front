@@ -21,12 +21,10 @@ export default class NewBill {
 
   handleChangeFile = e => {
     e.preventDefault();
-    //verifier le type de l'image choisis
-    // const fileTypes = ["image/jpeg", "image/jpg", "image/png"];
-
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
-    const filePath = e.target.value.split(/\\/g)
+    const filePath = e.target.value.split(/\\/g);
 
+    // SB [Bug Hunt] - Bills
     if (!["image/png", "image/jpg", "image/jpeg"].includes(file.type)) {
       this.document.querySelector(`input[data-testid="file"]`).value = "";
       // console.log("Invalid file format!");
