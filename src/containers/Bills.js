@@ -13,6 +13,7 @@ export default class {
     if (buttonNewBill)
       buttonNewBill.addEventListener("click", this.handleClickNewBill);
     const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`);
+    // console.log(icon);
     if (iconEye)
       iconEye.forEach((icon) => {
         icon.addEventListener("click", () => this.handleClickIconEye(icon));
@@ -42,9 +43,6 @@ export default class {
         .list()
         .then((snapshot) => {
           const bills = snapshot
-            // SB [Bug Hunt] - Bills
-             // Trier les factures par date croissante
-            // .sort((a, b) => new Date(b.date) - new Date(a.date))
             .map((doc) => {
               try {
                 return {

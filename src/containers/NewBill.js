@@ -16,20 +16,28 @@ export default class NewBill {
     new Logout({ document, localStorage, onNavigate })
   }
 
-  
-  
-
   handleChangeFile = e => {
     e.preventDefault();
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g);
+    const inputFile = e.target; 
 
+    
     // SB [Bug Hunt] - Bills
-    if (!["image/png", "image/jpg", "image/jpeg"].includes(file.type)) {
-      this.document.querySelector(`input[data-testid="file"]`).value = "";
-      // console.log("Invalid file format!");
-      return;
-    }
+    // la modale doit afficher l'image.
+    // dans le dashboard, le formulaire correspondant au ticket doit afficher le nom du fichier.
+
+    // Effacer tout message de validité personnalisé précédent
+    inputFile.setCustomValidity("");
+    if (!["image/png", "image/jpg", "image/jpeg"].includes(file.type)) {  
+      inputFile.value = ""; 
+      inputFile.setCustomValidity("Invalid file format!"); // Le message de validité personnalisé "Format de fichier invalide !" est défini avec 
+      inputFile.reportValidity(); // Le message de validité est affiché avec 
+      return false;
+    }else {
+      inputFile.setCustomValidity(""); // Effacer custom validity message le file is valid
+      inputFile.reportValidity();
+  }
     
     const fileName = filePath[filePath.length-1]
     const formData = new FormData()
@@ -46,7 +54,7 @@ export default class NewBill {
         }
       })
       .then(({fileUrl, key}) => {
-        console.log(fileUrl)
+        // console.log(fileUrl)
         this.billId = key
         this.fileUrl = fileUrl
         this.fileName = fileName
@@ -54,7 +62,7 @@ export default class NewBill {
   }
   handleSubmit = e => {
     e.preventDefault()
-    console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
+    // console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
     const email = JSON.parse(localStorage.getItem("user")).email
     const bill = {
       email,
