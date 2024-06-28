@@ -114,7 +114,7 @@ describe("Given I am connected as an employee", () => {
 });
 // });
 
-// SB
+// SB test d'intégration
 // ajouter un test d'intégration POST new bill.
 describe("Given I am connected as an employee", () => {
   // beforeEach: Configure l'environnement de test avant chaque test Il espionne l'objet store.bills, configure localStorage pour simuler un utilisateur connecté en tant qu'employé, et initialise l'interface utilisateur.
