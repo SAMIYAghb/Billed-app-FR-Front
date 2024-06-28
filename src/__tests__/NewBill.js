@@ -9,15 +9,16 @@ import store from "../__mocks__/store.js";
 import { ROUTES, ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import router from "../app/Router.js";
-import {expect, jest, test} from '@jest/globals';
-
+import { expect, jest, test } from "@jest/globals";
 
 describe("Given I am connected as an employee", () => {
   // SB
   // la meme chose que le test dans test/Bills.js
   let newBill;
-  beforeEach(()=>{
-    const html = NewBillUI();
+  beforeEach(() => {
+    // Initialisation de l'interface utilisateur (UI)
+    let html = NewBillUI();
+    // Ajout du HTML à la page de test
     document.body.innerHTML = html;
 
     Object.defineProperty(window, "localStorage", {
@@ -31,69 +32,19 @@ describe("Given I am connected as an employee", () => {
         email: "a@a.fr",
       })
     );
-
-    const newBill = new NewBill({
+    // On initialise la classe NewBill avec les paramètres nécessaires.
+    newBill = new NewBill({
       document,
+      // Définition de la fonction de navigation
       onNavigate: jest.fn(),
       store,
       localStorage: window.localStorage,
     });
-
-
-  })
-  describe("When I am on NewBill Page", () => {
-    // test("Then bill icon in vertical layout should be highlighted", async () => {
-    //   // const html = NewBillUI();
-    //   // document.body.innerHTML = html;
-    //   // //to-do write assertion
-    //   // / Ces lignes créent un mock de localStorage pour le test et y stockent un objet utilisateur avec le type "Employee".
-    //   Object.defineProperty(window, "localStorage", {
-    //     value: localStorageMock,
-    //   });
-    //   window.localStorage.setItem(
-    //     "user",
-    //     JSON.stringify({
-    //       type: "Employee",
-    //       email: "a@a.fr",
-    //     })
-    //   );
-    //   // Préparation du DOM: C'est souvent nécessaire pour simuler l'environnement dans lequel le code s'exécute.
-    //   const root = document.createElement("div");
-    //   root.setAttribute("id", "root");
-    //   document.body.append(root);
-    //   // Navigation vers la Page des Factures:
-    //   // Ces lignes initialisent le routeur de l'application et naviguent vers la route des factures.
-    //   router();
-    //   window.onNavigate(ROUTES_PATH.NewBill);
-    //   // Attente de l'Icône de Facture:
-    //   // La première ligne attend que l'élément avec l'attribut data-testid="icon-window" soit rendu dans le DOM. La deuxième ligne stocke cet élément dans la variable windowIcon.
-    //   // await waitFor(() => screen.getByTestId("icon-window"));
-    //   // const windowIcon = screen.getByTestId("icon-window");
-    //   // console.log('Bills __test__');
-    //   // console.log(windowIcon);
-    //   // Condition for pass the test
-    //   // expect(windowIcon.classList.contains("active-icon")).toBe(true);
-    // });
   });
-
+  // describe("When I am on NewBill Page", () => {
   // SB test image format
   describe("When I select an image in a correct format", () => {
     test("Then the input file should display the file name", () => {
-      // Initialisation de l'interface utilisateur (UI)
-      // const html = NewBillUI();
-      // Ajout du HTML à la page de test
-      // document.body.innerHTML = html;
-      // Définition de la fonction de navigation
-      // const onNavigate = (pathname) => {
-      //   document.body.innerHTML = ROUTES({ pathname });
-      // };
-      // On initialise la classe NewBill avec les paramètres nécessaires.
-      // const newBill = new NewBill({
-      //   document,
-      //   onNavigate,
-      //   store,
-      //   localStorage: window.localStorage,
-      // });
       // handleChangeFile est un mock de la méthode
       const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e));
       // On récupère l'élément input pour les fichiers via getByTestId.
@@ -119,21 +70,6 @@ describe("Given I am connected as an employee", () => {
       // Simuler les données utilisateur dans localStorage
       // localStorage.setItem("user", JSON.stringify({ email: "test@employee.com" }));
 
-      // Initialisation de l'interface utilisateur (UI)
-      const html = NewBillUI();
-      // Ajout du HTML à la page de test
-      document.body.innerHTML = html;
-      // Définition de la fonction de navigation
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname });
-      };
-      // On initialise la classe NewBill avec les paramètres nécessaires.
-      const newBill = new NewBill({
-        document,
-        onNavigate,
-        store,
-        localStorage: window.localStorage,
-      });
       // Mock de la méthode handleSubmit
       // jest.fn(...) : Jest fournit une fonction mock (factice) pour surveiller les appels à handleSubmit.
       const handleSubmit = jest.fn((e) => newBill.handleSubmit(e));
@@ -150,21 +86,6 @@ describe("Given I am connected as an employee", () => {
 
   describe("When I select an image in an incorrect extension ", () => {
     test("Then the bill form is not valid ", () => {
-      // Initialisation de l'interface utilisateur (UI)
-      // const html = NewBillUI();
-      // Ajout du HTML à la page de test
-      document.body.innerHTML = html;
-      // Définition de la fonction de navigation
-      // const onNavigate = (pathname) => {
-      //   document.body.innerHTML = ROUTES({ pathname });
-      // };
-      // On initialise la classe NewBill avec les paramètres nécessaires.
-      // const newBill = new NewBill({
-      //   document,
-      //   onNavigate,
-      //   store,
-      //   localStorage: window.localStorage,
-      // });
       // handleChangeFile est un mock de la méthode
       const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e));
       // On récupère l'élément input pour les fichiers via getByTestId.
@@ -187,9 +108,71 @@ describe("Given I am connected as an employee", () => {
     });
   });
 
-// SB
   // tester un bloc .catch dans une promesse avec un test unitaire
+});
+// });
 
-  // SB
-  // ajouter un test d'intégration POST new bill. 
+
+
+
+// SB
+// ajouter un test d'intégration POST new bill.
+describe("Given I am connected as an employee", () => {
+  
+  beforeEach(() => {
+    jest.spyOn(store, "bills");
+
+    Object.defineProperty(window, "localStorage", {
+      value: localStorageMock,
+    });
+
+    window.localStorage.setItem(
+      "user",
+      JSON.stringify({
+        type: "Employee",
+        email: "a@a.fr",
+      })
+    );
+
+    
+    
+    //
+    const root = document.createElement("div");
+    root.setAttribute("id", "root");
+    document.body.appendChild(root);
+    router();
+    //
+  });
+  
+  describe("When I add a new bill", () => {
+    test("create a new bills POST", async () => {
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({
+          pathname,
+        });
+      };
+
+      window.onNavigate(ROUTES_PATH.NewBill);
+
+      const newBill = new NewBill({
+        document,
+        onNavigate,
+        store: mockStore,
+        localStorage: window.localStorage,
+      });
+
+      document.body.innerHTML = NewBillUI();
+
+      const inputExpenseType = screen.getByTestId("expense-type");
+      const inputExpenseName = screen.getByTestId("expense-name");
+      const inputDatePicker = screen.getByTestId("datepicker");
+      const inputAmount = screen.getByTestId("amount");
+      const inputVAT = screen.getByTestId("vat");
+      const inputPCT = screen.getByTestId("pct");
+      const inputCommentary = screen.getByTestId("commentary");
+      const inputFile = screen.getByTestId("file");
+
+      
+    });
+  });
 });
