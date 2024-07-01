@@ -119,12 +119,13 @@ describe("Given I am connected as an employee", () => {
 describe("Given I am connected as an employee", () => {
   // beforeEach: Configure l'environnement de test avant chaque test Il espionne l'objet store.bills, configure localStorage pour simuler un utilisateur connecté en tant qu'employé, et initialise l'interface utilisateur.
   beforeEach(() => {
+    // jest.spyOn permet de surveiller les appels à la méthode 'bills' du store.
     jest.spyOn(store, "bills");
-
+    // On redéfinit localStorage pour utiliser une version simulée (mockée).
     Object.defineProperty(window, "localStorage", {
       value: localStorageMock,
     });
-
+    // On configure localStorage pour simuler qu'un utilisateur de type "Employee" est connecté.
     window.localStorage.setItem(
       "user",
       JSON.stringify({
@@ -133,12 +134,12 @@ describe("Given I am connected as an employee", () => {
       })
     );
 
-    //
+    // On crée un élément div avec l'id "root" et on l'ajoute au body du document.
     const root = document.createElement("div");
     root.setAttribute("id", "root");
     document.body.appendChild(root);
+    // On appelle une fonction router pour initialiser la navigation (déclarée ailleurs).
     router();
-    //
   });
 
   // afterEach: Restaure les mocks après chaque test pour éviter les interférences entre les tests.
@@ -149,14 +150,15 @@ describe("Given I am connected as an employee", () => {
   describe("When I add a new bill", () => {
     // Test de Création d'une Nouvelle Facture
     test("create a new bills POST", async () => {
+      // Fonction de navigation simulée
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({
           pathname,
         });
       };
-
+      // Simule la navigation vers la page de création de nouvelle facture
       window.onNavigate(ROUTES_PATH.NewBill);
-// 1-Configuration du Formulaire et de l'UI:
+      // 1-Configuration du Formulaire et de l'UI:
       // NewBill est initialisé avec les dépendances nécessaires.
       const newBill = new NewBill({
         document,
@@ -166,7 +168,7 @@ describe("Given I am connected as an employee", () => {
       });
       // Le formulaire est rendu dans le document.body.
       document.body.innerHTML = NewBillUI();
-
+      // Sélection des éléments du formulaire par leurs identifiants de test
       const inputExpenseType = screen.getByTestId("expense-type");
       const inputExpenseName = screen.getByTestId("expense-name");
       const inputDatePicker = screen.getByTestId("datepicker");
@@ -175,7 +177,7 @@ describe("Given I am connected as an employee", () => {
       const inputPCT = screen.getByTestId("pct");
       const inputCommentary = screen.getByTestId("commentary");
       const inputFile = screen.getByTestId("file");
-// 2-Saisie des Données dans le Formulaire:
+      // 2-Saisie des Données dans le Formulaire:
       // Création des Entrées du Formulaire: Le formulaire est initialisé et les champs de texte sont remplis avec les valeurs de test.
       userEvent.type(inputExpenseType, "Hôtel et logement");
       userEvent.type(inputExpenseName, "encore");
@@ -189,15 +191,17 @@ describe("Given I am connected as an employee", () => {
         "https://test.storage.tld/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=c1640e12-a24b-4b11-ae52-529112e9602a";
       // const email = "a@a";
 
-
-// 3-Mock de l'API:
+      // 3-Mock de l'API:
+         // Fonction mockée pour handleChangeFile
       const handleChangeFile = jest.fn(newBill.handleChangeFile);
+      // Espionnage de la méthode handleSubmit de l'objet newBill
       const handleSubmit = jest.spyOn(newBill, "handleSubmit");
+       // Sélection du formulaire par son identifiant 
       const formNewBill = screen.getByTestId("form-new-bill");
       // mockStore.bills est mocké pour simuler les appels API.
       mockStore.bills.mockImplementation(() => {
         return {
-          // La méthode create retourne une promesse résolue avec un objet contenant l'URL du fichier et une clé.
+          // La méthode create retourne une promesse résolue avec un objet contenant l'URL du fichier et une clé.Mock d'un service API
           create: () => {
             return Promise.resolve({
               fileUrl: `${newBill.fileUrl}`,
@@ -214,18 +218,13 @@ describe("Given I am connected as an employee", () => {
           },
         };
       });
-// 4-Gestion des Événements:
+      // 4-Gestion des Événements:
       // handleChangeFile est mocké et attaché à l'événement change du fichier.
       inputFile.addEventListener("change", handleChangeFile);
       // handleSubmit est espionné et attaché à l'événement submit du formulaire.
       formNewBill.addEventListener("submit", handleSubmit);
       // Le fichier est téléchargé, et l'événement de soumission du formulaire est déclenché.
-      // userEvent.upload(
-      //   inputFile,
-      //   new File(["(--[IMG]--)"], "testFile.jpg", {
-      //     type: "image/jpg",
-      //   })
-      // );
+       // Simulation de l'upload d'un fichier
       const pngFile = new File(["image"], "is-an-image.png", {
         type: "image/png",
       });
@@ -233,10 +232,11 @@ describe("Given I am connected as an employee", () => {
 
       //  Simulation de la soumission du fichier: Le fichier est téléchargé et l'événement de changement de fichier est déclenché. //
       fireEvent.submit(formNewBill);
-// 5-Assertions:
+      // 5-Assertions:
       // Vérifie que handleChangeFile et handleSubmit sont appelés une fois.
       expect(handleChangeFile).toHaveBeenCalled();
       expect(handleChangeFile).toBeCalledTimes(1);
+       // Vérifie que handleSubmit est appelé une fois.
       expect(handleSubmit).toHaveBeenCalled();
       expect(handleSubmit).toBeCalledTimes(1);
       // Vérifie que mockStore.bills est appelé une fois.
@@ -247,3 +247,22 @@ describe("Given I am connected as an employee", () => {
     });
   });
 });
+
+// La fonction describe permet de regrouper les tests liés à une fonctionnalité spécifique.
+
+// jest.spyOn: Permet de surveiller les appels à une méthode spécifique.
+// jest.fn: Crée une fonction mockée pour simuler le comportement de handleChangeFile.
+
+// Un mock est une version simulée d'un objet, d'une fonction, ou d'un composant utilisé dans les tests pour imiter le comportement de ses homologues réels. 
+
+
+// Pourquoi utiliser des mocks ?
+// Isolation : Permet de tester un composant sans dépendre des autres composants ou des services externes.
+// Contrôle : Offre un contrôle complet sur les entrées et sorties des fonctions et objets simulés.
+// Fiabilité : Évite les tests fragiles qui peuvent échouer en raison de problèmes avec des services externes ou d'autres parties non testées du code.
+// Performance : Les tests utilisant des mocks sont souvent plus rapides car ils évitent les appels réseau, les accès aux bases de données, etc.
+
+// Types de mocks
+// Fonctions mockées : Fonctions simulées qui imitent le comportement de fonctions réelles.
+// Objets mockés : Objets simulés avec des méthodes mockées pour imiter les objets réels.
+// Services mockés : Simulations de services complets (comme des API ou des bases de données) pour éviter les dépendances externes.
