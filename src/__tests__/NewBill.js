@@ -15,18 +15,18 @@ import userEvent from "@testing-library/user-event";
 
 describe("Given I am connected as an employee", () => {
   // SB
-  // la meme chose que le test dans test/Bills.js
+  // // beforeEach: Configure l'environnement de test avant chaque test Il espionne l'objet store.bills, configure localStorage pour simuler un utilisateur connecté en tant qu'employé, et initialise l'interface utilisateur.
   let newBill;
   beforeEach(() => {
     // Initialisation de l'interface utilisateur (UI)
     let html = NewBillUI();
     // Ajout du HTML à la page de test
     document.body.innerHTML = html;
-
+    // / Ces lignes créent un mock de localStorage pour le test et y stockent un objet utilisateur avec le type "Employee".
     Object.defineProperty(window, "localStorage", {
       value: localStorageMock,
     });
-
+    // Simuler les données utilisateur dans localStorage
     window.localStorage.setItem(
       "user",
       JSON.stringify({
@@ -43,16 +43,18 @@ describe("Given I am connected as an employee", () => {
       localStorage: window.localStorage,
     });
   });
-  // describe("When I am on NewBill Page", () => {
   // SB test image format
   describe("When I select an image in a correct format", () => {
     test("Then the input file should display the file name", () => {
-      // handleChangeFile est un mock de la méthode
+      // déclarer une constante nommée handleChangeFile
+      // Créez un mock(simulée) pour handleChangeFile en utilisant jest.fn
       const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e));
       // On récupère l'élément input pour les fichiers via getByTestId.
       const input = screen.getByTestId("file");
       input.addEventListener("change", handleChangeFile);
-      // Simulation d'un événement de changement de fichier
+      // **Simulation d'un événement de changement de fichier
+      // L'objet passé à fireEvent.change contient une propriété target qui simule l'état de l'élément input après le changement.
+      // files est une propriété de target qui contient une liste de fichiers sélectionnés par l'utilisateur.
       fireEvent.change(input, {
         target: {
           files: [
@@ -69,13 +71,9 @@ describe("Given I am connected as an employee", () => {
     });
 
     test("Then a bill is created", () => {
-      // Simuler les données utilisateur dans localStorage
-      // localStorage.setItem("user", JSON.stringify({ email: "test@employee.com" }));
-
       // Mock de la méthode handleSubmit
       // jest.fn(...) : Jest fournit une fonction mock (factice) pour surveiller les appels à handleSubmit.
       const handleSubmit = jest.fn((e) => newBill.handleSubmit(e));
-      // jest.fn(...) : Jest fournit une fonction mock (factice) pour surveiller les appels à handleSubmit.
       const submit = screen.getByTestId("form-new-bill");
       submit.addEventListener("submit", handleSubmit);
       // Simulation de la soumission du formulaire
@@ -110,9 +108,7 @@ describe("Given I am connected as an employee", () => {
     });
   });
 
-  // tester un bloc .catch dans une promesse avec un test unitaire
 });
-// });
 
 // SB test d'intégration
 // ajouter un test d'intégration POST new bill.
@@ -159,7 +155,7 @@ describe("Given I am connected as an employee", () => {
       // Simule la navigation vers la page de création de nouvelle facture
       window.onNavigate(ROUTES_PATH.NewBill);
       // 1-Configuration du Formulaire et de l'UI:
-      // NewBill est initialisé avec les dépendances nécessaires.
+      // NewBill est initialisé avec les dépendances nécessaires.creer une instance
       const newBill = new NewBill({
         document,
         onNavigate,
@@ -178,7 +174,7 @@ describe("Given I am connected as an employee", () => {
       const inputCommentary = screen.getByTestId("commentary");
       const inputFile = screen.getByTestId("file");
       // 2-Saisie des Données dans le Formulaire:
-      // Création des Entrées du Formulaire: Le formulaire est initialisé et les champs de texte sont remplis avec les valeurs de test.
+      // Création des Entrées du Formulaire: Le formulaire est initialisé et les champs de texte sont remplis avec les valeurs de test.donne moké
       userEvent.type(inputExpenseType, "Hôtel et logement");
       userEvent.type(inputExpenseName, "encore");
       userEvent.type(inputDatePicker, "2004-04-04");
@@ -189,14 +185,12 @@ describe("Given I am connected as an employee", () => {
       newBill.fileName = "testFile";
       newBill.fileUrl =
         "https://test.storage.tld/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=c1640e12-a24b-4b11-ae52-529112e9602a";
-      // const email = "a@a";
-
       // 3-Mock de l'API:
-         // Fonction mockée pour handleChangeFile
+      // Fonction mockée pour handleChangeFile
       const handleChangeFile = jest.fn(newBill.handleChangeFile);
       // Espionnage de la méthode handleSubmit de l'objet newBill
       const handleSubmit = jest.spyOn(newBill, "handleSubmit");
-       // Sélection du formulaire par son identifiant 
+      // Sélection du formulaire par son identifiant
       const formNewBill = screen.getByTestId("form-new-bill");
       // mockStore.bills est mocké pour simuler les appels API.
       mockStore.bills.mockImplementation(() => {
@@ -224,7 +218,7 @@ describe("Given I am connected as an employee", () => {
       // handleSubmit est espionné et attaché à l'événement submit du formulaire.
       formNewBill.addEventListener("submit", handleSubmit);
       // Le fichier est téléchargé, et l'événement de soumission du formulaire est déclenché.
-       // Simulation de l'upload d'un fichier
+      // Simulation de l'upload d'un fichier
       const pngFile = new File(["image"], "is-an-image.png", {
         type: "image/png",
       });
@@ -236,7 +230,7 @@ describe("Given I am connected as an employee", () => {
       // Vérifie que handleChangeFile et handleSubmit sont appelés une fois.
       expect(handleChangeFile).toHaveBeenCalled();
       expect(handleChangeFile).toBeCalledTimes(1);
-       // Vérifie que handleSubmit est appelé une fois.
+      // Vérifie que handleSubmit est appelé une fois.
       expect(handleSubmit).toHaveBeenCalled();
       expect(handleSubmit).toBeCalledTimes(1);
       // Vérifie que mockStore.bills est appelé une fois.
@@ -249,49 +243,45 @@ describe("Given I am connected as an employee", () => {
     // Test pour vérifier la gestion des erreurs lorsque la récupération des factures échoue avec une erreur 500.
     test("fetches messages from an API and fails with 500 message error", async () => {
       // Empêche la méthode console.error d'afficher des erreurs dans la console pendant le test
-      jest.spyOn(console, 'error').mockImplementation(() => {});
-// Mock (simule) la méthode bills du store pour qu'elle renvoie une erreur 500 lors de la mise à jour
+      jest.spyOn(console, "error").mockImplementation(() => {});
+      // Mock (simule) la méthode bills du store pour qu'elle renvoie une erreur 500 lors de la mise à jour
       mockStore.bills.mockImplementationOnce(() => {
         return {
           update: () => {
             // Simule une promesse rejetée avec une erreur 500
-            return Promise.reject(new Error('Erreur 500'))
+            return Promise.reject(new Error("Erreur 500"));
           },
-        }
-      })
+        };
+      });
       // Crée une nouvelle instance de NewBill en passant les paramètres nécessaires
       const newBill = new NewBill({
         document,
         onNavigate,
         store: mockStore,
         localStorage: window.localStorage,
-      })
+      });
 
       // Sélectionne le formulaire avec l'identifiant de test "form-new-bill"
-      const form = screen.getByTestId('form-new-bill');
+      const form = screen.getByTestId("form-new-bill");
       // Crée une fonction mock pour handleSubmit et l'associe à l'événement submit du formulaire
       const handleSubmit = jest.fn((e) => newBill.handleSubmit(e));
-      form.addEventListener('submit', handleSubmit);
+      form.addEventListener("submit", handleSubmit);
       // Simule la soumission du formulaire
       fireEvent.submit(form);
       // Attend que toutes les promesses en cours soient résolues
       await new Promise(process.nextTick);
       // Vérifie que console.error a été appelé, ce qui signifie qu'une erreur a été capturée
       expect(console.error).toBeCalled();
-    })
-
-  })
     });
+  });
+});
 
-    
-    
 // La fonction describe permet de regrouper les tests liés à une fonctionnalité spécifique.
 
 // jest.spyOn: Permet de surveiller les appels à une méthode spécifique.
 // jest.fn: Crée une fonction mockée pour simuler le comportement de handleChangeFile.
 
-// Un mock est une version simulée d'un objet, d'une fonction, ou d'un composant utilisé dans les tests pour imiter le comportement de ses homologues réels. 
-
+// Un mock est une version simulée d'un objet, d'une fonction, ou d'un composant utilisé dans les tests pour imiter le comportement de ses homologues réels.
 
 // Pourquoi utiliser des mocks ?
 // Isolation : Permet de tester un composant sans dépendre des autres composants ou des services externes.

@@ -16,12 +16,13 @@ import Bills from "../containers/Bills.js";
 describe("Given I am connected as an employee", () => {
   // beforeEach: Configure l'environnement de test avant chaque test Il espionne l'objet store.bills, configure localStorage pour simuler un utilisateur connecté en tant qu'employé, et initialise l'interface utilisateur.
   beforeEach(() => {
+    // crée un espion sur la méthode bills de l'objet store.
     jest.spyOn(store, "bills");
-    //  // Ces lignes créent un mock de localStorage pour le test et y stockent un objet utilisateur avec le type "Employee".
+    // Ces lignes créent un mock de localStorage pour le test et y stockent un objet utilisateur avec le type "Employee".
     Object.defineProperty(window, "localStorage", {
       value: localStorageMock,
     });
-
+// Simuler les données utilisateur dans localStorage
     window.localStorage.setItem(
       "user",
       JSON.stringify({
@@ -43,23 +44,7 @@ describe("Given I am connected as an employee", () => {
 
   describe("When I am on Bills Page", () => {
     test("Then bill icon in vertical layout should be highlighted", async () => {
-      // Ces lignes créent un mock de localStorage pour le test et y stockent un objet utilisateur avec le type "Employee".
-      // Object.defineProperty(window, "localStorage", {
-      //   value: localStorageMock,
-      // });
-      // window.localStorage.setItem(
-      //   "user",
-      //   JSON.stringify({
-      //     type: "Employee",
-      //   })
-      // );
-      // Préparation du DOM: C'est souvent nécessaire pour simuler l'environnement dans lequel le code s'exécute.
-      // const root = document.createElement("div");
-      // root.setAttribute("id", "root");
-      // document.body.append(root);
-      // Navigation vers la Page des Factures:
-      // Ces lignes initialisent le routeur de l'application et naviguent vers la route des factures.
-      // router();
+     
       window.onNavigate(ROUTES_PATH.Bills);
       // Attente de l'Icône de Facture:
       // La première ligne attend que l'élément avec l'attribut data-testid="icon-window" soit rendu dans le DOM. La deuxième ligne stocke cet élément dans la variable windowIcon.
@@ -67,13 +52,12 @@ describe("Given I am connected as an employee", () => {
       const windowIcon = screen.getByTestId("icon-window");
       // console.log('Bills __test__');
       // console.log(windowIcon);
-      //to-do write expect expression
-
       // Condition for pass the test
       // SB expect
       // vérifier que l'élément windowIcon contient la classe active-icon, indiquant qu'il est mis en surbrillance.
-      // expect(windowIcon.classList.contains("active-icon")).toBe(true);
+      // Le résultat de cette vérification est stocké dans la variable activeIcon
       const activeIcon = windowIcon.classList.contains("active-icon");
+      // oBeTruthy() vérifie si activeIcon est true, ce qui signifie que windowIcon possède bien la classe "active-icon"
       expect(activeIcon).toBeTruthy();
     });
 
@@ -125,11 +109,6 @@ describe("Given I am connected as an employee", () => {
       expect(modale).toBeTruthy();
     });
   });
-
-  // SB
-  // handleClickNewBill = () => {
-  //   this.onNavigate(ROUTES_PATH["NewBill"]);
-  // }; ligne 25
 
   // SB
   describe("When I click on 'Send a new bill' page", () => {
@@ -202,6 +181,7 @@ describe("Given I am a user connected as Employee", () => {
     test("fetches bills from an API and fails with 404 message error", async () => {
       // On génère le HTML pour afficher une erreur 404.
       const html = BillsUI({ error: "Erreur 404" });
+      // On injecte le HTML généré dans le corps du document simulé.
       document.body.innerHTML = html;
       // On vérifie que le message d'erreur "Erreur 404" est bien présent dans le DOM.
       const message = screen.getByText(/Erreur 404/);

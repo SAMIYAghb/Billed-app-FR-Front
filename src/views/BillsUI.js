@@ -20,12 +20,17 @@ const row = (bill) => {
   }
 
 const rows = (data) => {
-  // SB [Bug Hunt] - Bills
-             // Trier les factures par date croissante
+  // SB [Bug report] - Bills
+             // Trier les factures par ordre décroissant 
+            //  Condition pour vérifier les données
              if (data && data.length) {
+              // data.sort trie le tableau data en place, modifiant l'ordre de ses éléments.
               data.sort((a, b) => {
+                // convertit la date au format string de l'objet a en millisecondes 
                 const dateA = Date.parse(a.date);
                 const dateB = Date.parse(b.date);
+                // Si dateA et dateB sont égales, la fonction retourne 0, ce qui signifie que a et b sont égaux en termes de tri.
+                // Si dateA est inférieure à dateB, la fonction retourne 1, ce qui place a après b dans l'ordre
                 return dateA === dateB ? 0 : dateA < dateB ? 1 : -1;
               });
             }

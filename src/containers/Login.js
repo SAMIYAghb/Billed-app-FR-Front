@@ -42,6 +42,7 @@ export default class Login {
     const user = {
       type: "Admin",
       // SB [Bug report] - Login
+      //  si un administrateur remplit correctement les champs du Login, il devrait naviguer sur la page Dashboard
       // email: e.target.querySelector(`input[data-testid="employee-email-input"]`).value,
       // password: e.target.querySelector(`input[data-testid="employee-password-input"]`).value,
       email: e.target.querySelector(`input[data-testid="admin-email-input"]`).value,     
