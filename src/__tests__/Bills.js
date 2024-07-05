@@ -197,6 +197,7 @@ describe("Given I am a user connected as Employee", () => {
         expect(document.querySelector("tbody").rows.length).toBeGreaterThan(0);
       });
     });
+    
     // Test pour vérifier la gestion des erreurs lorsque la récupération des factures échoue avec une erreur 404.
     test("fetches bills from an API and fails with 404 message error", async () => {
       // On génère le HTML pour afficher une erreur 404.

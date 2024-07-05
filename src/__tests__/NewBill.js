@@ -245,9 +245,46 @@ describe("Given I am connected as an employee", () => {
       // Vérifie que l'interface utilisateur affiche "Mes notes de frais".
       expect(screen.getAllByText("Mes notes de frais")).toBeTruthy();
     });
-  });
-});
 
+    // Test pour vérifier la gestion des erreurs lorsque la récupération des factures échoue avec une erreur 500.
+    test("fetches messages from an API and fails with 500 message error", async () => {
+      // Empêche la méthode console.error d'afficher des erreurs dans la console pendant le test
+      jest.spyOn(console, 'error').mockImplementation(() => {});
+// Mock (simule) la méthode bills du store pour qu'elle renvoie une erreur 500 lors de la mise à jour
+      mockStore.bills.mockImplementationOnce(() => {
+        return {
+          update: () => {
+            // Simule une promesse rejetée avec une erreur 500
+            return Promise.reject(new Error('Erreur 500'))
+          },
+        }
+      })
+      // Crée une nouvelle instance de NewBill en passant les paramètres nécessaires
+      const newBill = new NewBill({
+        document,
+        onNavigate,
+        store: mockStore,
+        localStorage: window.localStorage,
+      })
+
+      // Sélectionne le formulaire avec l'identifiant de test "form-new-bill"
+      const form = screen.getByTestId('form-new-bill');
+      // Crée une fonction mock pour handleSubmit et l'associe à l'événement submit du formulaire
+      const handleSubmit = jest.fn((e) => newBill.handleSubmit(e));
+      form.addEventListener('submit', handleSubmit);
+      // Simule la soumission du formulaire
+      fireEvent.submit(form);
+      // Attend que toutes les promesses en cours soient résolues
+      await new Promise(process.nextTick);
+      // Vérifie que console.error a été appelé, ce qui signifie qu'une erreur a été capturée
+      expect(console.error).toBeCalled();
+    })
+
+  })
+    });
+
+    
+    
 // La fonction describe permet de regrouper les tests liés à une fonctionnalité spécifique.
 
 // jest.spyOn: Permet de surveiller les appels à une méthode spécifique.
